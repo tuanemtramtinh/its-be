@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tuanemtramtinh</groupId>
-    <artifactId>ITS</artifactId>
+    <artifactId>its</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -18,7 +18,10 @@
     </properties>
 
     <modules>
-
+        <module>its-common</module>
+        <module>its-eureka-server</module>
+        <module>its-gateway</module>
+        <module>its-learning-management</module>
     </modules>
 
     <dependencies>
