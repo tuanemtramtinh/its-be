@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthenticationComponent {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public AuthenticationComponent(UserRepository userRepository,

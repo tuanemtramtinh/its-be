@@ -8,6 +8,6 @@ public class SecurityConfig extends BaseSecurityConfig {
 
   @Override
   protected String[] getPublicEndpoints() {
-    return new String[] { "/register", "/login", "/" };
+    return new String[] { "/register", "/login", "/", "/actuator/**" };
   }
 }
