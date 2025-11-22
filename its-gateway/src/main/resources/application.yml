@@ -16,6 +16,12 @@ spring:
                 - Path=/learning-management/**
               filters:
                 - StripPrefix=1
+            - id: user-services
+              uri: lb://its-users
+              predicates:
+                - Path=/users/**
+              filters:
+                - StripPrefix=1
           discovery:
             locator:
               enabled: true

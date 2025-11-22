@@ -1,9 +1,9 @@
 server:
-  port: 8082
+  port: 8081
 
 spring:
   application:
-    name: its-learning-management
+    name: its-users
 
   data:
     mongodb:
@@ -19,3 +19,7 @@ management:
     web:
       exposure:
         include: health,info
+
+jwt:
+  secret: your-secret-key-should-be-at-least-256-bits-long-for-hmac-sha-256-algorithm-please-change-this-in-production
+  expiration: 86400000 # 24 hours in milliseconds (Long type)
