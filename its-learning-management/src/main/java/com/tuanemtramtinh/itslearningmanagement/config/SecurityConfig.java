@@ -1,9 +1,9 @@
 package com.tuanemtramtinh.itslearningmanagement.config;
 
 import com.tuanemtramtinh.security.config.BaseSecurityConfig;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 public class SecurityConfig extends BaseSecurityConfig {
 
     @Override

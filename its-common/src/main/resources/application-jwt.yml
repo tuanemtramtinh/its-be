@@ -1,0 +1,4 @@
+# Shared JWT configuration for all services
+jwt:
+  secret: your-secret-key-should-be-at-least-256-bits-long-for-hmac-sha-256-algorithm-please-change-this-in-production
+  expiration: 86400000

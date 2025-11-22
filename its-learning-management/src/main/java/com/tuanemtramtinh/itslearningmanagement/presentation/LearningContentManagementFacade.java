@@ -10,4 +10,9 @@ public class LearningContentManagementFacade {
     public String index() {
         return "Hello World!";
     }
+
+    @GetMapping("/test")
+    public String testAuthentication() {
+        return "Hello World! Auth";
+    }
 }

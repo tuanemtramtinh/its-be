@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserManagementFacade {
 
-    private AuthenticationComponent authenticationComponent;
+    private final AuthenticationComponent authenticationComponent;
 
     @Autowired
     public UserManagementFacade(AuthenticationComponent authenticationComponent) {
@@ -25,11 +25,6 @@ public class UserManagementFacade {
     @GetMapping("/")
     public String index() {
         return "HelloWorld";
-    }
-
-    @GetMapping("/hi")
-    public String test() {
-        return "Vl";
     }
 
     @PostMapping("/register")
@@ -50,11 +45,6 @@ public class UserManagementFacade {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-    }
-
-    @GetMapping("/register")
-    public String registerUser() {
-        return "Test";
     }
 
 }
