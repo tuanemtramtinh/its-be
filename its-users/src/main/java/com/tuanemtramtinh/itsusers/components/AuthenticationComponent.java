@@ -4,6 +4,7 @@ import com.tuanemtramtinh.entity.User;
 import com.tuanemtramtinh.itsusers.dto.LoginRequest;
 import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
+import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 import com.tuanemtramtinh.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class AuthenticationComponent {
         this.jwtUtil = jwtUtil;
     }
 
-    public String register(RegisterRequest req) {
+    public RegisterResponse register(RegisterRequest req) {
         if (userRepository.existsByEmail(req.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
@@ -39,8 +40,8 @@ public class AuthenticationComponent {
                 .password(encodedPassword)
                 .role("USER") // Default role
                 .build();
-        userRepository.save(newUser);
-        return "success";
+        newUser = userRepository.save(newUser);
+        return new RegisterResponse(newUser.getId(), newUser.getEmail());
     }
 
     public LoginResponse login(LoginRequest req) {
