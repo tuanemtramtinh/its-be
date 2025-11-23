@@ -1,4 +1,4 @@
-package com.tuanemtramtinh.entity;
+package com.tuanemtramtinh.itscommon.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,21 +9,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Document(collection = "course-instances")
+@Document(collection = "contents")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CourseInstance {
+@AllArgsConstructor
+public class Content {
     @Id
     private String id;
 
-    private String courseId;
-    private String teacherId;
+    private String courseInstanceId;
 
-    private String startDate;
-    private String endDate;
+    private String title;
+    private String description;
+    private String type;
     private String status;
+    private Integer orderIndex;
+
+    private Date dueDate;
+    private Date allowAt;
+    private boolean allowedLate;
 
     private Date createdAt;
     private Date updatedAt;

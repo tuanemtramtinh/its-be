@@ -1,14 +1,14 @@
-package com.tuanemtramtinh.itsusers.components;
+package com.tuanemtramtinh.itsusers.services;
 
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserManagementComponent {
+public class UserManagementService {
 
     private final UserRepository userRepository;
 
-    public UserManagementComponent(UserRepository userRepository) {
+    public UserManagementService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

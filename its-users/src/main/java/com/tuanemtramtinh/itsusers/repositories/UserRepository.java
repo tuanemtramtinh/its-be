@@ -1,6 +1,6 @@
 package com.tuanemtramtinh.itsusers.repositories;
 
-import com.tuanemtramtinh.entity.User;
+import com.tuanemtramtinh.itscommon.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

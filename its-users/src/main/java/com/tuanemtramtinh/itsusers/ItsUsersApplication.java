@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.tuanemtramtinh.itsusers", "com.tuanemtramtinh.utils",
-        "com.tuanemtramtinh.security" })
+@ComponentScan(basePackages = { "com.tuanemtramtinh.itsusers", "com.tuanemtramtinh.itscommon",
+        "com.tuanemtramtinh.utils", "com.tuanemtramtinh.security" })
 public class ItsUsersApplication {
 
     public static void main(String[] args) {

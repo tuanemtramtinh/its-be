@@ -1,4 +1,4 @@
-package com.tuanemtramtinh.response;
+package com.tuanemtramtinh.itscommon.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

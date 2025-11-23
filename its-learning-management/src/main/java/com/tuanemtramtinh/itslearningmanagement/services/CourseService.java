@@ -1,6 +1,6 @@
-package com.tuanemtramtinh.itslearningmanagement.component;
+package com.tuanemtramtinh.itslearningmanagement.services;
 
-import com.tuanemtramtinh.entity.Course;
+import com.tuanemtramtinh.itscommon.entity.Course;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseRequest;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseResponse;
 import com.tuanemtramtinh.itslearningmanagement.repositories.CourseRepository;
@@ -11,11 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class CourseComponent {
+public class CourseService {
 
     private final CourseRepository courseRepository;
 
-    public CourseComponent(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository) {
         this.courseRepository = courseRepository;
     }
 
@@ -38,6 +38,14 @@ public class CourseComponent {
         return courseResponses;
     }
 
+    public CourseResponse getCourseById(String id) {
+        Course course = courseRepository.findById(id).orElse(null);
+        if (course == null) {
+            throw new RuntimeException("Course with id " + id + " not found");
+        }
+        return CourseResponse.builder().id(id).title(course.getTitle()).code(course.getCode()).status(course.getStatus()).build();
+    }
+
     public void deleteCourse(String id) {
         if (!courseRepository.existsById(id)) {
             throw new RuntimeException("Course with id " + id + " does not exist");
@@ -45,4 +53,21 @@ public class CourseComponent {
 
         courseRepository.deleteById(id);
     }
+
+    public CourseResponse updateCourse(String id, CourseRequest req) {
+        Course course = courseRepository.findById(id).orElse(null);
+        if (course == null) {
+            throw new RuntimeException("Course with id " + id + " not found");
+        }
+
+        course.setTitle(req.getTitle());
+        course.setCode(req.getCode());
+        course.setDescription(req.getDescription());
+        course.setCredit(req.getCredit());
+        course.setStatus("ACTIVE");
+        course = courseRepository.save(course);
+
+        return CourseResponse.builder().id(id).title(course.getTitle()).code(course.getCode()).status(course.getStatus()).build();
+    }
+
 }

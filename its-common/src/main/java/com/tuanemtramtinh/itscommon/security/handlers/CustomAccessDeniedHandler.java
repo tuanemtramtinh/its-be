@@ -1,7 +1,7 @@
-package com.tuanemtramtinh.security.handlers;
+package com.tuanemtramtinh.itscommon.security.handlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tuanemtramtinh.response.ApiResponse;
+import com.tuanemtramtinh.itscommon.response.ApiResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

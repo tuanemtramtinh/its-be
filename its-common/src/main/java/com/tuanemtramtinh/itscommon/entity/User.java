@@ -1,4 +1,4 @@
-package com.tuanemtramtinh.entity;
+package com.tuanemtramtinh.itscommon.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;

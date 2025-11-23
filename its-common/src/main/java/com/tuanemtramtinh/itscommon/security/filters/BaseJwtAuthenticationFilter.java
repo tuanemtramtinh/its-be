@@ -1,6 +1,6 @@
-    package com.tuanemtramtinh.security.filters;
+    package com.tuanemtramtinh.itscommon.security.filters;
 
-    import com.tuanemtramtinh.utils.JwtUtil;
+    import com.tuanemtramtinh.itscommon.utils.JwtUtil;
     import jakarta.servlet.FilterChain;
     import jakarta.servlet.ServletException;
     import jakarta.servlet.http.HttpServletRequest;

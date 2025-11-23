@@ -1,6 +1,6 @@
 package com.tuanemtramtinh.itsusers.filters;
 
-import com.tuanemtramtinh.security.filters.BaseJwtAuthenticationFilter;
+import com.tuanemtramtinh.itscommon.security.filters.BaseJwtAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 @Component

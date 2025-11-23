@@ -1,4 +1,4 @@
-package com.tuanemtramtinh.utils;
+package com.tuanemtramtinh.itscommon.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;

@@ -1,27 +1,27 @@
-package com.tuanemtramtinh.itsusers.components;
+package com.tuanemtramtinh.itsusers.services;
 
-import com.tuanemtramtinh.entity.User;
+import com.tuanemtramtinh.itscommon.entity.User;
 import com.tuanemtramtinh.itsusers.dto.LoginRequest;
 import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
 import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
-import com.tuanemtramtinh.utils.JwtUtil;
+import com.tuanemtramtinh.itscommon.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthenticationComponent {
+public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public AuthenticationComponent(UserRepository userRepository,
-            PasswordEncoder passwordEncoder,
-            JwtUtil jwtUtil) {
+    public AuthenticationService(UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;

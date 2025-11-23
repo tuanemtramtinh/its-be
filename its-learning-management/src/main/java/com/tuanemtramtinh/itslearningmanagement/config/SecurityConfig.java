@@ -1,6 +1,6 @@
 package com.tuanemtramtinh.itslearningmanagement.config;
 
-import com.tuanemtramtinh.security.config.BaseSecurityConfig;
+import com.tuanemtramtinh.itscommon.security.config.BaseSecurityConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
