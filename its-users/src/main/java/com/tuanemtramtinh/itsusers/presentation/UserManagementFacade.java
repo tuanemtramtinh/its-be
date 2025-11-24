@@ -19,7 +19,8 @@ public class UserManagementFacade {
     private final UserManagementService userManagementService;
 
     @Autowired
-    public UserManagementFacade(AuthenticationService authenticationService, UserManagementService userManagementService) {
+    public UserManagementFacade(AuthenticationService authenticationService,
+            UserManagementService userManagementService) {
         this.authenticationService = authenticationService;
         this.userManagementService = userManagementService;
     }
@@ -31,32 +32,30 @@ public class UserManagementFacade {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> registerUser(@RequestBody RegisterRequest req) {
-        try {
-            RegisterResponse result = authenticationService.register(req);
-            return ResponseEntity.ok(ApiResponse.ok("Register new user successfully", result));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        if (req == null || req.getEmail() == null || req.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Email and password are required"));
         }
+
+        RegisterResponse result = authenticationService.register(req);
+        return ResponseEntity.ok(ApiResponse.ok("Register new user successfully", result));
     }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> loginUser(@RequestBody LoginRequest req) {
-        try {
-            LoginResponse response = authenticationService.login(req);
-            return ResponseEntity.ok(ApiResponse.ok("Login successfully", response));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
+        if (req == null || req.getEmail() == null || req.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error("Email and password are required"));
         }
+
+        LoginResponse response = authenticationService.login(req);
+        return ResponseEntity.ok(ApiResponse.ok("Login successfully", response));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteUser (@PathVariable String id){
-        try {
-            userManagementService.deleteUser(id);
-            return ResponseEntity.ok(ApiResponse.ok("Delete user with id: " + id + " successfully"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id) {
+        userManagementService.deleteUser(id);
+        return ResponseEntity.ok(ApiResponse.ok("Delete user with id: " + id + " successfully"));
     }
 
 }

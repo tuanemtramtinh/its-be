@@ -33,22 +33,24 @@ public class JwtUtil {
   }
 
   public String generateToken(String username) {
-    return Jwts.builder()
+    String token = Jwts.builder()
         .subject(username)
         .issuedAt(new Date())
         .expiration(new Date(new Date().getTime() + jwtExpiration))
-        .signWith(key)
+        .signWith(key, Jwts.SIG.HS256) // Keys.hmacShaKeyFor() tự động sử dụng HS256
         .compact();
+    return token;
   }
 
   public String generateToken(String username, String role) {
-    return Jwts.builder()
+    String token = Jwts.builder()
         .subject(username)
         .claim("role", role)
         .issuedAt(new Date())
         .expiration(new Date(new Date().getTime() + jwtExpiration))
-        .signWith(key)
+        .signWith(key, Jwts.SIG.HS256) // Keys.hmacShaKeyFor() tự động sử dụng HS256
         .compact();
+    return token;
   }
 
   public String extractUsername(String token) {
@@ -79,6 +81,8 @@ public class JwtUtil {
 
       // Kiểm tra expiration
       if (isTokenExpired(token)) {
+        String tokenUsername = extractUsername(token);
+        log.warn("JWT token expired for user: {}", tokenUsername != null ? tokenUsername : "unknown");
         return false;
       }
 
@@ -89,6 +93,10 @@ public class JwtUtil {
       }
 
       return true;
+    } catch (io.jsonwebtoken.ExpiredJwtException e) {
+      String tokenUsername = e.getClaims() != null ? e.getClaims().getSubject() : "unknown";
+      log.warn("JWT token expired for user: {}", tokenUsername);
+      return false;
     } catch (Exception e) {
       if (username != null) {
         log.error("JWT token validation failed for user: {}", username, e);

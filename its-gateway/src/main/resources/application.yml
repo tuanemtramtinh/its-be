@@ -5,10 +5,23 @@ spring:
   application:
     name: its-gateway
 
+  # Import shared JWT configuration from its-common module
+  config:
+    import: classpath:application-jwt.yml
+
   cloud:
     gateway:
       server:
         webflux:
+          globalcors:
+            add-to-simple-url-handler-mapping: true
+            cors-configurations:
+              "[/**]":
+                allowedOriginPatterns: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+                allowCredentials: true
+                maxAge: 3600
           routes:
             - id: learning-management-service
               uri: lb://its-learning-management

@@ -21,6 +21,7 @@
         <module>its-common</module>
         <module>its-eureka-server</module>
         <module>its-gateway</module>
+        <module>its-learning-management</module>
         <module>its-users</module>
     </modules>
 
