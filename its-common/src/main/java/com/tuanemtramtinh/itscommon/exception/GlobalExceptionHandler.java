@@ -13,14 +13,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException e) {
-    log.error("RuntimeException: {}", e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(ApiResponse.error(e.getMessage()));
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
-    log.error("Exception: {}", e.getMessage(), e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(ApiResponse.error("Internal server error: " + e.getMessage()));
   }

@@ -7,18 +7,16 @@ import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
 import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 import com.tuanemtramtinh.itscommon.utils.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    @Autowired
     public AuthenticationService(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtUtil jwtUtil) {
