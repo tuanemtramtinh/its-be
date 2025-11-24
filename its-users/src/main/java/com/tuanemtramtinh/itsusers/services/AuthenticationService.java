@@ -20,8 +20,8 @@ public class AuthenticationService {
 
     @Autowired
     public AuthenticationService(UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
-                                 JwtUtil jwtUtil) {
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -55,7 +55,8 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole() != null ? user.getRole() : "USER");
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail(),
+                user.getRole() != null ? user.getRole() : "USER");
 
         return new LoginResponse(
                 token,

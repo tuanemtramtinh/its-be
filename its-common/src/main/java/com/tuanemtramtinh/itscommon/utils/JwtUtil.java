@@ -42,9 +42,10 @@ public class JwtUtil {
     return token;
   }
 
-  public String generateToken(String username, String role) {
+  public String generateToken(String userId, String username, String role) {
     String token = Jwts.builder()
-        .subject(username)
+        .subject(userId)
+        .claim("username", username)
         .claim("role", role)
         .issuedAt(new Date())
         .expiration(new Date(new Date().getTime() + jwtExpiration))
@@ -53,65 +54,67 @@ public class JwtUtil {
     return token;
   }
 
-  public String extractUsername(String token) {
-    return extractClaim(token, Claims::getSubject);
-  }
+  // public String extractUsername(String token) {
+  // return extractClaim(token, Claims::getSubject);
+  // }
 
-  public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-    final Claims claims = extractAllClaims(token);
-    return claimsResolver.apply(claims);
-  }
+  // public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+  // final Claims claims = extractAllClaims(token);
+  // return claimsResolver.apply(claims);
+  // }
 
-  private Claims extractAllClaims(String token) {
-    return Jwts.parser()
-        .verifyWith(key)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload();
-  }
+  // private Claims extractAllClaims(String token) {
+  // return Jwts.parser()
+  // .verifyWith(key)
+  // .build()
+  // .parseSignedClaims(token)
+  // .getPayload();
+  // }
 
-  public boolean validateToken(String token) {
-    return validateToken(token, null);
-  }
+  // public boolean validateToken(String token) {
+  // return validateToken(token, null);
+  // }
 
-  public boolean validateToken(String token, String username) {
-    try {
-      // Parse và verify signature
-      Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+  // public boolean validateToken(String token, String username) {
+  // try {
+  // // Parse và verify signature
+  // Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 
-      // Kiểm tra expiration
-      if (isTokenExpired(token)) {
-        String tokenUsername = extractUsername(token);
-        log.warn("JWT token expired for user: {}", tokenUsername != null ? tokenUsername : "unknown");
-        return false;
-      }
+  // // Kiểm tra expiration
+  // if (isTokenExpired(token)) {
+  // String tokenUsername = extractUsername(token);
+  // log.warn("JWT token expired for user: {}", tokenUsername != null ?
+  // tokenUsername : "unknown");
+  // return false;
+  // }
 
-      // Nếu có username, kiểm tra username match
-      if (username != null) {
-        final String tokenUsername = extractUsername(token);
-        return username.equals(tokenUsername);
-      }
+  // // Nếu có username, kiểm tra username match
+  // if (username != null) {
+  // final String tokenUsername = extractUsername(token);
+  // return username.equals(tokenUsername);
+  // }
 
-      return true;
-    } catch (io.jsonwebtoken.ExpiredJwtException e) {
-      String tokenUsername = e.getClaims() != null ? e.getClaims().getSubject() : "unknown";
-      log.warn("JWT token expired for user: {}", tokenUsername);
-      return false;
-    } catch (Exception e) {
-      if (username != null) {
-        log.error("JWT token validation failed for user: {}", username, e);
-      } else {
-        log.error("JWT validation error: {}", e.getMessage());
-      }
-      return false;
-    }
-  }
+  // return true;
+  // } catch (io.jsonwebtoken.ExpiredJwtException e) {
+  // String tokenUsername = e.getClaims() != null ? e.getClaims().getSubject() :
+  // "unknown";
+  // log.warn("JWT token expired for user: {}", tokenUsername);
+  // return false;
+  // } catch (Exception e) {
+  // if (username != null) {
+  // log.error("JWT token validation failed for user: {}", username, e);
+  // } else {
+  // log.error("JWT validation error: {}", e.getMessage());
+  // }
+  // return false;
+  // }
+  // }
 
-  private boolean isTokenExpired(String token) {
-    return extractExpiration(token).before(new Date());
-  }
+  // private boolean isTokenExpired(String token) {
+  // return extractExpiration(token).before(new Date());
+  // }
 
-  private Date extractExpiration(String token) {
-    return extractClaim(token, Claims::getExpiration);
-  }
+  // private Date extractExpiration(String token) {
+  // return extractClaim(token, Claims::getExpiration);
+  // }
 }
