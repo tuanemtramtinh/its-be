@@ -1,12 +1,14 @@
 package com.tuanemtramtinh.itsusers.services;
 
 import com.tuanemtramtinh.itscommon.entity.User;
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
 import com.tuanemtramtinh.itsusers.dto.LoginRequest;
 import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
 import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 import com.tuanemtramtinh.itscommon.utils.JwtUtil;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,7 @@ public class AuthenticationService {
                 .lastName(req.getLastName())
                 .email(req.getEmail())
                 .password(encodedPassword)
-                .role("USER") // Default role
+                .role(req.getRole() != null ? req.getRole() : RoleEnum.STUDENT) // Default role
                 .build();
         newUser = userRepository.save(newUser);
         return new RegisterResponse(newUser.getId(), newUser.getEmail());
@@ -54,13 +56,13 @@ public class AuthenticationService {
         }
 
         String token = jwtUtil.generateToken(user.getId(), user.getEmail(),
-                user.getRole() != null ? user.getRole() : "USER");
+                user.getRole() != null ? user.getRole() : RoleEnum.STUDENT);
 
         return new LoginResponse(
                 token,
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getRole() != null ? user.getRole() : "USER");
+                user.getRole() != null ? user.getRole() : RoleEnum.STUDENT);
     }
 }

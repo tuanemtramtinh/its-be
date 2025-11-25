@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.tuanemtramtinh.itscommon.enums.CourseInstanceEnum;
+
 import java.util.Date;
 
 @Document(collection = "course-instances")
@@ -21,9 +23,9 @@ public class CourseInstance {
     private String courseId;
     private String teacherId;
 
-    private String startDate;
-    private String endDate;
-    private String status;
+    // private String startDate;
+    // private String endDate;
+    private CourseInstanceEnum status;
 
     private Date createdAt;
     private Date updatedAt;

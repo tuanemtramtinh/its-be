@@ -9,6 +9,8 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -42,7 +44,7 @@ public class JwtUtil {
     return token;
   }
 
-  public String generateToken(String userId, String username, String role) {
+  public String generateToken(String userId, String username, RoleEnum role) {
     String token = Jwts.builder()
         .subject(userId)
         .claim("username", username)

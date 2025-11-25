@@ -1,5 +1,7 @@
 package com.tuanemtramtinh.itsusers.dto;
 
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,5 @@ public class LoginResponse {
   private String email;
   private String firstName;
   private String lastName;
-  private String role;
+  private RoleEnum role;
 }

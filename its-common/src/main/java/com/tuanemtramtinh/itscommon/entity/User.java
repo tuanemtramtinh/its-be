@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+
 @Document(collection = "users")
 @Builder
 @NoArgsConstructor
@@ -19,6 +21,6 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private String role;
+    private RoleEnum role;
 
 }

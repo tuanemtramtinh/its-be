@@ -1,6 +1,7 @@
 package com.tuanemtramtinh.itslearningmanagement.presentation;
 
 import com.tuanemtramtinh.itslearningmanagement.services.CourseService;
+import com.tuanemtramtinh.itslearningmanagement.dto.CourseInstanceResponse;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseRequest;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseResponse;
 import com.tuanemtramtinh.itscommon.response.ApiResponse;
@@ -52,7 +53,8 @@ public class LearningContentManagementFacade {
     }
 
     @PatchMapping("/courses/{id}")
-    public ResponseEntity<ApiResponse<CourseResponse>> updateCourse(@PathVariable String id, @RequestBody CourseRequest req) {
+    public ResponseEntity<ApiResponse<CourseResponse>> updateCourse(@PathVariable String id,
+            @RequestBody CourseRequest req) {
         try {
             CourseResponse result = courseService.updateCourse(id, req);
             return ResponseEntity.ok(ApiResponse.ok("Update course successfully", result));
@@ -69,6 +71,13 @@ public class LearningContentManagementFacade {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    @PostMapping("/assign")
+    public ResponseEntity<ApiResponse<CourseInstanceResponse>> assignTeacherToCourse(@RequestParam String courseId,
+            @RequestParam String teacherId) {
+        CourseInstanceResponse res = courseService.assignTeacherToCourse(courseId, teacherId);
+        return ResponseEntity.ok(ApiResponse.ok("Assign teacher to course successfully", res));
     }
 
 }

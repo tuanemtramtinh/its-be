@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
   @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<ApiResponse<Object>> handleRuntimeException(RuntimeException e) {
+  public ResponseEntity<ApiResponse<Void>> handleRuntimeException(RuntimeException e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        .body(ApiResponse.error(e.getMessage()));
+        .body(ApiResponse.<Void>error(e.getMessage()));
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ApiResponse<Object>> handleException(Exception e) {
+  public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body(ApiResponse.error("Internal server error: " + e.getMessage()));
+        .body(ApiResponse.<Void>error("Internal server error: " + e.getMessage()));
   }
 }

@@ -1,4 +1,4 @@
-package com.tuanemtramtinh.itsusers.dto;
+package com.tuanemtramtinh.itscommon.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

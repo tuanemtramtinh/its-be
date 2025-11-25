@@ -8,7 +8,8 @@ import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
 import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.dto.UserRequest;
-import com.tuanemtramtinh.itsusers.dto.UserResponse;
+import com.tuanemtramtinh.itscommon.dto.UserResponse;
+import com.tuanemtramtinh.itscommon.entity.CourseInstance;
 import com.tuanemtramtinh.itscommon.response.ApiResponse;
 
 import java.util.List;

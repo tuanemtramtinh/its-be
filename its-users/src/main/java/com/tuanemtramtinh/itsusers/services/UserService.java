@@ -2,9 +2,9 @@ package com.tuanemtramtinh.itsusers.services;
 
 import org.springframework.stereotype.Service;
 
+import com.tuanemtramtinh.itscommon.dto.UserResponse;
 import com.tuanemtramtinh.itscommon.entity.User;
 import com.tuanemtramtinh.itsusers.dto.UserRequest;
-import com.tuanemtramtinh.itsusers.dto.UserResponse;
 import com.tuanemtramtinh.itsusers.mapper.UserResponseMapper;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 
