@@ -6,6 +6,7 @@ import com.tuanemtramtinh.itsusers.dto.LoginRequest;
 import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
 import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
+import com.tuanemtramtinh.itsusers.mapper.RegisterResponseMapper;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 import com.tuanemtramtinh.itscommon.utils.JwtUtil;
 
@@ -18,13 +19,15 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RegisterResponseMapper registerResponseMapper;
 
     public AuthenticationService(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtUtil jwtUtil) {
+            JwtUtil jwtUtil, RegisterResponseMapper registerResponseMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.registerResponseMapper = registerResponseMapper;
     }
 
     public RegisterResponse register(RegisterRequest req) {
@@ -40,8 +43,10 @@ public class AuthenticationService {
                 .password(encodedPassword)
                 .role(req.getRole() != null ? req.getRole() : RoleEnum.STUDENT) // Default role
                 .build();
+
         newUser = userRepository.save(newUser);
-        return new RegisterResponse(newUser.getId(), newUser.getEmail());
+
+        return registerResponseMapper.toDTO(newUser);
     }
 
     public LoginResponse login(LoginRequest req) {
