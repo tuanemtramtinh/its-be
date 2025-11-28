@@ -4,6 +4,7 @@ import com.tuanemtramtinh.itscommon.entity.Course;
 import com.tuanemtramtinh.itscommon.entity.CourseInstance;
 import com.tuanemtramtinh.itscommon.entity.User;
 import com.tuanemtramtinh.itscommon.enums.CourseInstanceEnum;
+import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseInstanceResponse;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseRequest;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseResponse;
@@ -13,10 +14,14 @@ import com.tuanemtramtinh.itslearningmanagement.repositories.CourseInstanceRepos
 import com.tuanemtramtinh.itslearningmanagement.repositories.CourseRepository;
 import com.tuanemtramtinh.itslearningmanagement.repositories.UserRepository;
 
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class CourseService {
@@ -40,7 +45,7 @@ public class CourseService {
 
     public CourseResponse createCourse(CourseRequest req) {
         Course newCourse = Course.builder().title(req.getTitle()).code(req.getCode())
-                .description(req.getDescription()).credit(3).status("ACTIVE").createdAt(new Date())
+                .description(req.getDescription()).credit(3).status(CourseStatusEnum.ACTIVE).createdAt(new Date())
                 .updatedAt(new Date()).build();
 
         if (newCourse == null) {
@@ -51,9 +56,19 @@ public class CourseService {
         return courseResponseMapper.toDTO(newCourse);
     }
 
-    public List<CourseResponse> getAllCourse() {
-        List<Course> courses = courseRepository.findAll();
-        return courseResponseMapper.toDTOList(courses);
+    public Page<CourseResponse> getAllCourse(String keyword, CourseStatusEnum status, Pageable pageable) {
+
+        Page<Course> courseList;
+
+        if (keyword == null || keyword.isBlank()) {
+            courseList = courseRepository.findByStatus(status, pageable);
+        } else {
+            String safeKeyword = keyword == null ? "" : Pattern.quote(keyword);
+            String regex = ".*" + safeKeyword + ".*";
+            courseList = courseRepository.searchByKeyword(status, regex, pageable);
+        }
+
+        return courseResponseMapper.toDTOPage(courseList);
     }
 
     public CourseResponse getCourseById(String id) {
@@ -95,7 +110,7 @@ public class CourseService {
         course.setCode(req.getCode());
         course.setDescription(req.getDescription());
         course.setCredit(req.getCredit());
-        course.setStatus("ACTIVE");
+        course.setStatus(CourseStatusEnum.ACTIVE);
         course = courseRepository.save(course);
 
         return courseResponseMapper.toDTO(course);

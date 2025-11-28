@@ -10,10 +10,16 @@ import com.tuanemtramtinh.itsusers.dto.RegisterResponse;
 import com.tuanemtramtinh.itsusers.dto.UserRequest;
 import com.tuanemtramtinh.itscommon.dto.UserResponse;
 import com.tuanemtramtinh.itscommon.entity.CourseInstance;
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
 import com.tuanemtramtinh.itscommon.response.ApiResponse;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +40,12 @@ public class UserManagementFacade {
     }
 
     @GetMapping("/")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getUserLists() {
+    public ResponseEntity<ApiResponse<Page<UserResponse>>> getUserLists(@RequestParam(required = false) String email,
+            @RequestParam(required = false) RoleEnum role, @RequestParam(required = false) UserStatusEnum status,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity
-                .ok(ApiResponse.ok("Get User list successfully", this.userManagementService.getUserList()));
+                .ok(ApiResponse.ok("Get User list successfully",
+                        this.userManagementService.getUserList(email, role, status, pageable)));
     }
 
     @GetMapping("/{id}")

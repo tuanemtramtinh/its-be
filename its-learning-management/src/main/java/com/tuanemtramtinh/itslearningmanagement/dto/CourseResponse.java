@@ -1,5 +1,7 @@
 package com.tuanemtramtinh.itslearningmanagement.dto;
 
+import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
+
 import lombok.*;
 
 @Getter
@@ -13,5 +15,5 @@ public class CourseResponse {
     private String code;
     private String description;
     private String credit;
-    private String status;
+    private CourseStatusEnum status;
 }

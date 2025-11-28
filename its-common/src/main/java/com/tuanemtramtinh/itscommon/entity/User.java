@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
 
 @Document(collection = "users")
 @Builder
@@ -22,5 +23,6 @@ public class User {
     private String email;
     private String password;
     private RoleEnum role;
+    private UserStatusEnum status;
 
 }

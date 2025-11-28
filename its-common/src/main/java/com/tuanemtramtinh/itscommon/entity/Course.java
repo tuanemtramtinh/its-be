@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
+
 import java.util.Date;
 
 @Document(collection = "courses")
@@ -22,7 +24,7 @@ public class Course {
     private String code;
     private String description;
     private Integer credit;
-    private String status;
+    private CourseStatusEnum status;
 
     private Date createdAt;
     private Date updatedAt;

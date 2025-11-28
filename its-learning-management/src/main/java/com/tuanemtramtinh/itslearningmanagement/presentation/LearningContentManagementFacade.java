@@ -4,7 +4,13 @@ import com.tuanemtramtinh.itslearningmanagement.services.CourseService;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseInstanceResponse;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseRequest;
 import com.tuanemtramtinh.itslearningmanagement.dto.CourseResponse;
+import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
 import com.tuanemtramtinh.itscommon.response.ApiResponse;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +43,11 @@ public class LearningContentManagementFacade {
     }
 
     @GetMapping("/courses")
-    public ResponseEntity<ApiResponse<List<CourseResponse>>> getAllCourses() {
-        List<CourseResponse> result = courseService.getAllCourse();
+    public ResponseEntity<ApiResponse<Page<CourseResponse>>> getAllCourses(
+            @RequestParam(required = false, defaultValue = "ACTIVE") CourseStatusEnum status,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<CourseResponse> result = courseService.getAllCourse(keyword, status, pageable);
         return ResponseEntity.ok(ApiResponse.ok("Get list of courses successfully", result));
     }
 
