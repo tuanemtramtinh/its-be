@@ -1,0 +1,36 @@
+services:
+  eureka:
+    build: ./its-eureka-server
+    image: its-eureka-server
+    container_name: its-eureka
+    ports:
+      - "8761:8761"
+
+  gateway:
+    build: ./its-gateway
+    image: its-gateway
+    container_name: its-gateway
+    depends_on:
+      - eureka
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_DEFAULT_ZONE=http://its-eureka:8761/eureka/
+
+  users:
+    build: ./its-users
+    image: its-users
+    container_name: its-users
+    depends_on:
+      - eureka
+    environment:
+      - EUREKA_DEFAULT_ZONE=http://its-eureka:8761/eureka/
+
+  learning:
+    build: ./its-learning-management
+    image: its-learning
+    container_name: its-learning
+    depends_on:
+      - eureka
+    environment:
+      - EUREKA_DEFAULT_ZONE=http://its-eureka:8761/eureka/
