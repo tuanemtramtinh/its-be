@@ -51,3 +51,5 @@ jobs:
           port: ${{ secrets.PORT_PRODUCTION }}
           script: |
             docker login
+            cd its-be/
+            ls
