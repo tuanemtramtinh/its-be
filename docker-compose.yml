@@ -1,14 +1,14 @@
 services:
   eureka:
     build: ./its-eureka-server
-    image: its-eureka-server
+    image: tuanemtramtinh/its-eureka-server:latest
     container_name: its-eureka
     ports:
       - "8761:8761"
 
   gateway:
     build: ./its-gateway
-    image: its-gateway
+    image: tuanemtramtinh/its-gateway:latest
     container_name: its-gateway
     depends_on:
       - eureka
@@ -19,7 +19,7 @@ services:
 
   users:
     build: ./its-users
-    image: its-users
+    image: tuanemtramtinh/its-users:latest
     container_name: its-users
     depends_on:
       - eureka
@@ -28,7 +28,7 @@ services:
 
   learning:
     build: ./its-learning-management
-    image: its-learning
+    image: tuanemtramtinh/its-learning:latest
     container_name: its-learning
     depends_on:
       - eureka
