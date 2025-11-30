@@ -23,5 +23,4 @@ public interface CourseRepository extends MongoRepository<Course, String> {
   Page<Course> searchByKeyword(CourseStatusEnum status, String regex, Pageable pageable);
 
   Page<Course> findByStatus(CourseStatusEnum status, Pageable pageable);
-
 }

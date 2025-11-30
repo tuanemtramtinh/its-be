@@ -16,5 +16,4 @@ public interface CourseInstanceResponseMapper {
   @Mapping(target = "course", source = "course")
   @Mapping(target = "teacher", source = "teacher")
   CourseInstanceResponse toDTO(CourseInstance entity, Course course, User teacher);
-
 }

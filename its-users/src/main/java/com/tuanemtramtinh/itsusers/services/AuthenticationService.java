@@ -13,6 +13,8 @@ import com.tuanemtramtinh.itscommon.utils.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class AuthenticationService {
 
@@ -42,6 +44,7 @@ public class AuthenticationService {
                 .email(req.getEmail())
                 .password(encodedPassword)
                 .role(req.getRole() != null ? req.getRole() : RoleEnum.STUDENT) // Default role
+                .listCourseInstance(new ArrayList<>())
                 .build();
 
         newUser = userRepository.save(newUser);

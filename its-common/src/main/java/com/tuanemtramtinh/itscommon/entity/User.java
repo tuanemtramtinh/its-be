@@ -7,6 +7,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import com.tuanemtramtinh.itscommon.enums.RoleEnum;
 import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Document(collection = "users")
 @Builder
 @NoArgsConstructor
@@ -24,5 +27,5 @@ public class User {
     private String password;
     private RoleEnum role;
     private UserStatusEnum status;
-
+    private List<String> listCourseInstance;
 }
