@@ -80,8 +80,7 @@ public class CourseService {
         if (course == null) {
             throw new RuntimeException("Course with id " + id + " not found");
         }
-        return CourseResponse.builder().id(id).title(course.getTitle()).code(course.getCode())
-                .status(course.getStatus()).build();
+        return courseResponseMapper.toDTO(course);
     }
 
     public void deleteCourse(String id) {
