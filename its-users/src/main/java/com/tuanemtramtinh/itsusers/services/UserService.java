@@ -39,6 +39,8 @@ public class UserService {
       currentUser.setLastName(data.getLastName());
     if (data.getRole() != null)
       currentUser.setRole(data.getRole());
+    if (data.getStatus() != null)
+      currentUser.setStatus(data.getStatus());
 
     currentUser = userRepository.save(currentUser);
     return userResponseMapper.toDTO(currentUser);

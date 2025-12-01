@@ -4,6 +4,7 @@ import com.tuanemtramtinh.itscommon.dto.UserResponse;
 import com.tuanemtramtinh.itscommon.entity.User;
 import com.tuanemtramtinh.itscommon.enums.RoleEnum;
 import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
+import com.tuanemtramtinh.itsusers.dto.UserRequest;
 import com.tuanemtramtinh.itsusers.mapper.UserResponseMapper;
 import com.tuanemtramtinh.itsusers.repositories.UserRepository;
 
@@ -23,6 +24,28 @@ public class UserManagementService {
     public UserManagementService(UserRepository userRepository, UserResponseMapper userResponseMapper) {
         this.userRepository = userRepository;
         this.userResponseMapper = userResponseMapper;
+    }
+
+    public UserResponse updateUser(String userId, UserRequest data) {
+
+        if (userId == null)
+            throw new RuntimeException("UserId is null");
+
+        User currentUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (data.getEmail() != null)
+            currentUser.setEmail(data.getEmail());
+        if (data.getFirstName() != null)
+            currentUser.setFirstName(data.getFirstName());
+        if (data.getLastName() != null)
+            currentUser.setLastName(data.getLastName());
+        if (data.getRole() != null)
+            currentUser.setRole(data.getRole());
+        if (data.getStatus() != null)
+            currentUser.setStatus(data.getStatus());
+
+        currentUser = userRepository.save(currentUser);
+        return userResponseMapper.toDTO(currentUser);
     }
 
     public UserResponse getUserDetail(String userId) {

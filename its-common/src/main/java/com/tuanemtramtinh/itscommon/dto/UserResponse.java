@@ -1,5 +1,8 @@
 package com.tuanemtramtinh.itscommon.dto;
 
+import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +17,6 @@ public class UserResponse {
   private String firstName;
   private String lastName;
   private String email;
-  private String role;
+  private RoleEnum role;
+  private UserStatusEnum status;
 }

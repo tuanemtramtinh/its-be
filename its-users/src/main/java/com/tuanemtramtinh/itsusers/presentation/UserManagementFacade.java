@@ -54,6 +54,13 @@ public class UserManagementFacade {
                 .ok(ApiResponse.ok("Get User detail successfully", this.userManagementService.getUserDetail(id)));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable String id,
+            @RequestBody UserRequest data) {
+        return ResponseEntity
+                .ok(ApiResponse.ok("Update User Successfully", this.userManagementService.updateUser(id, data)));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String id) {
         userManagementService.deleteUser(id);
