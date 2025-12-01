@@ -2,6 +2,7 @@ package com.tuanemtramtinh.itslearningmanagement.presentation;
 
 import com.tuanemtramtinh.itscommon.dto.UserResponse;
 import com.tuanemtramtinh.itslearningmanagement.dto.*;
+import com.tuanemtramtinh.itslearningmanagement.services.ContentService;
 import com.tuanemtramtinh.itslearningmanagement.services.CourseInstanceService;
 import com.tuanemtramtinh.itslearningmanagement.services.CourseService;
 import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
@@ -22,10 +23,14 @@ public class LearningContentManagementFacade {
 
     private final CourseService courseService;
     private final CourseInstanceService courseInstanceService;
+    private final ContentService contentService;
 
-    public LearningContentManagementFacade(CourseService courseService, CourseInstanceService courseInstanceService) {
+    public LearningContentManagementFacade(CourseService courseService, 
+                                            CourseInstanceService courseInstanceService,
+                                            ContentService contentService) {
         this.courseService = courseService;
         this.courseInstanceService = courseInstanceService;
+        this.contentService = contentService;
     }
 
     @PostMapping("/courses-instance/create")
@@ -157,6 +162,92 @@ public class LearningContentManagementFacade {
             @RequestParam String teacherId) {
         CourseInstanceResponse res = courseService.assignTeacherToCourse(courseId, teacherId);
         return ResponseEntity.ok(ApiResponse.ok("Assign teacher to course successfully", res));
+    }
+
+
+    @PostMapping("/contents")
+    public ResponseEntity<ApiResponse<ContentResponse>> createContent(@RequestBody ContentRequest contentRequest) {
+        try {
+            ContentResponse result = contentService.createContent(contentRequest);
+            return ResponseEntity.ok(ApiResponse.ok("Create content successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/contents/{id}")
+    public ResponseEntity<ApiResponse<ContentResponse>> getContentDetail(@PathVariable String id) {
+        try {
+            ContentResponse result = contentService.getContentDetail(id);
+            return ResponseEntity.ok(ApiResponse.ok("Get content detail successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PatchMapping("/contents/{id}")
+    public ResponseEntity<ApiResponse<ContentResponse>> updateContent(@PathVariable String id,
+            @RequestBody ContentRequest contentRequest) {
+        try {
+            ContentResponse result = contentService.updateContent(id, contentRequest);
+            return ResponseEntity.ok(ApiResponse.ok("Update content successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/contents/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteContent(@PathVariable String id) {
+        try {
+            contentService.deleteContent(id);
+            return ResponseEntity.ok(ApiResponse.ok("Delete content successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/contents")
+    public ResponseEntity<ApiResponse<Page<ContentResponse>>> searchContent(
+            @RequestParam String courseInstanceId,
+            @PageableDefault(size = 10, sort = "orderIndex") Pageable pageable) {
+        try {
+            Page<ContentResponse> result = contentService.searchContent(courseInstanceId, pageable);
+            return ResponseEntity.ok(ApiResponse.ok("Search content successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("/contents/{contentId}/attachments")
+    public ResponseEntity<ApiResponse<AttachmentResponse>> addContentAttachment(@PathVariable String contentId,
+            @RequestBody AttachmentRequest attachmentRequest) {
+        try {
+            AttachmentResponse result = contentService.addContentAttachment(contentId, attachmentRequest);
+            return ResponseEntity.ok(ApiResponse.ok("Add attachment successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/attachments/{attachmentId}")
+    public ResponseEntity<ApiResponse<Void>> removeContentAttachment(@PathVariable String attachmentId) {
+        try {
+            contentService.removeContentAttachment(attachmentId);
+            return ResponseEntity.ok(ApiResponse.ok("Remove attachment successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/contents/{contentId}/attachments")
+    public ResponseEntity<ApiResponse<List<AttachmentResponse>>> getContentAttachments(@PathVariable String contentId) {
+        try {
+            List<AttachmentResponse> result = contentService.getContentAttachments(contentId);
+            return ResponseEntity.ok(ApiResponse.ok("Get content attachments successfully", result));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
     }
 
 }
