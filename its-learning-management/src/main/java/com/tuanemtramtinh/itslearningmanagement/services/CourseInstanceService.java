@@ -33,11 +33,11 @@ public class CourseInstanceService {
     private final UserResponseMapper userResponseMapper;
 
     public CourseInstanceService(CourseRepository courseRepository,
-                                 UserRepository userRepository,
-                                 CourseInstanceRepository courseInstanceRepository,
-                                 CourseInstanceResponseMapper courseInstanceResponseMapper,
-                                 CourseInstanceUpdateStatusReponseMapper courseInstanceUpdateStatusReponseMapper,
-                                 UserResponseMapper userResponseMapper) {
+            UserRepository userRepository,
+            CourseInstanceRepository courseInstanceRepository,
+            CourseInstanceResponseMapper courseInstanceResponseMapper,
+            CourseInstanceUpdateStatusReponseMapper courseInstanceUpdateStatusReponseMapper,
+            UserResponseMapper userResponseMapper) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.courseInstanceRepository = courseInstanceRepository;
@@ -46,61 +46,80 @@ public class CourseInstanceService {
         this.userResponseMapper = userResponseMapper;
     }
 
-    public CourseInstanceResponse createCourseInstance(CourseInstanceRequest courseInstanceRequest){
-        if(courseInstanceRequest.getCourseId() == null) throw new RuntimeException("courseId is null");
-        if(courseInstanceRequest.getTeacherId() == null) throw new RuntimeException("teacherId is null");
-        if(courseInstanceRequest.getStatus() == null) throw new RuntimeException("status is null");
+    public CourseInstanceResponse createCourseInstance(CourseInstanceRequest courseInstanceRequest) {
+        if (courseInstanceRequest.getCourseId() == null)
+            throw new RuntimeException("courseId is null");
+        if (courseInstanceRequest.getTeacherId() == null)
+            throw new RuntimeException("teacherId is null");
+        if (courseInstanceRequest.getStatus() == null)
+            throw new RuntimeException("status is null");
 
-        Course findCourse = courseRepository.findById(courseInstanceRequest.getCourseId()).orElseThrow(() -> new RuntimeException("course not found"));
-        User findUser = userRepository.findById(courseInstanceRequest.getTeacherId()).orElseThrow(() -> new RuntimeException("user not found"));
-        if(findUser.getRole() != RoleEnum.TEACHER) throw new RuntimeException("user is not teacher");
+        Course findCourse = courseRepository.findById(courseInstanceRequest.getCourseId())
+                .orElseThrow(() -> new RuntimeException("course not found"));
+        User findUser = userRepository.findById(courseInstanceRequest.getTeacherId())
+                .orElseThrow(() -> new RuntimeException("user not found"));
+        if (findUser.getRole() != RoleEnum.TEACHER)
+            throw new RuntimeException("user is not teacher");
 
         CourseInstance courseInstance = CourseInstance.builder().courseId(courseInstanceRequest.getCourseId())
-                                                                .teacherId(courseInstanceRequest.getTeacherId())
-                                                                .status(CourseInstanceEnum.ACTIVE).build();
+                .teacherId(courseInstanceRequest.getTeacherId())
+                .status(CourseInstanceEnum.ACTIVE).build();
 
-        if(courseInstance == null) throw new RuntimeException("course instance can't not be created");
+        if (courseInstance == null)
+            throw new RuntimeException("course instance can't not be created");
         courseInstance = courseInstanceRepository.save(courseInstance);
         return courseInstanceResponseMapper.toDTO(courseInstance, findCourse, findUser);
     }
 
-    public CourseInstanceUpdateStatusResponse updateStatusCourseInstance(CourseInstanceUpdateStatusRequest courseInstanceUpdateStatusRequest){
-        if(courseInstanceUpdateStatusRequest.getCourseInstanceId() == null) throw new RuntimeException("courseInstanceId is null");
-        if(courseInstanceUpdateStatusRequest.getNewStatus() == null) throw new RuntimeException("newStatus is null");
+    public CourseInstanceUpdateStatusResponse updateStatusCourseInstance(
+            CourseInstanceUpdateStatusRequest courseInstanceUpdateStatusRequest) {
+        if (courseInstanceUpdateStatusRequest.getCourseInstanceId() == null)
+            throw new RuntimeException("courseInstanceId is null");
+        if (courseInstanceUpdateStatusRequest.getNewStatus() == null)
+            throw new RuntimeException("newStatus is null");
 
-        CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceUpdateStatusRequest.getCourseInstanceId()).orElseThrow(() -> new RuntimeException("course instance not found"));
+        CourseInstance courseInstance = courseInstanceRepository
+                .findById(courseInstanceUpdateStatusRequest.getCourseInstanceId())
+                .orElseThrow(() -> new RuntimeException("course instance not found"));
 
         CourseInstanceEnum newStatusEnum = CourseInstanceEnum.valueOf(
-                courseInstanceUpdateStatusRequest.getNewStatus()
-        );
+                courseInstanceUpdateStatusRequest.getNewStatus());
         courseInstance.setStatus(newStatusEnum);
         courseInstance = courseInstanceRepository.save(courseInstance);
 
         return courseInstanceUpdateStatusReponseMapper.toDTO(courseInstance);
     }
 
-    public void deleteCourseInstance(String courseInstanceId){
-        if(courseInstanceId == null) throw new RuntimeException("courseInstanceId is null");
+    public void deleteCourseInstance(String courseInstanceId) {
+        if (courseInstanceId == null)
+            throw new RuntimeException("courseInstanceId is null");
 
-        CourseInstance courseInstance =  courseInstanceRepository.findById(courseInstanceId).orElseThrow(() -> new RuntimeException("courseInstance not found"));
+        CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceId)
+                .orElseThrow(() -> new RuntimeException("courseInstance not found"));
         courseInstanceRepository.delete(courseInstance);
     }
 
-    public void archiveCourseInstance(String courseInstanceId){
-        if(courseInstanceId == null) throw new RuntimeException("courseInstanceId is null");
+    public void archiveCourseInstance(String courseInstanceId) {
+        if (courseInstanceId == null)
+            throw new RuntimeException("courseInstanceId is null");
 
-        CourseInstance courseInstance =  courseInstanceRepository.findById(courseInstanceId).orElseThrow(() -> new RuntimeException("courseInstance not found"));
+        CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceId)
+                .orElseThrow(() -> new RuntimeException("courseInstance not found"));
 
         courseInstance.setStatus(CourseInstanceEnum.INACTIVE);
         courseInstanceRepository.save(courseInstance);
     }
 
-    public CourseInstanceResponse getCourseInstanceDetails(String courseInstanceId){
-        if(courseInstanceId == null) throw new RuntimeException("courseInstanceId is null");
+    public CourseInstanceResponse getCourseInstanceDetails(String courseInstanceId) {
+        if (courseInstanceId == null)
+            throw new RuntimeException("courseInstanceId is null");
 
-        CourseInstance courseInstance =  courseInstanceRepository.findById(courseInstanceId).orElseThrow(() -> new RuntimeException("courseInstance not found"));
-        Course course = courseRepository.findById(courseInstance.getCourseId()).orElseThrow(() -> new RuntimeException("course not found"));
-        User teacher =  userRepository.findById(courseInstance.getTeacherId()).orElseThrow(() -> new RuntimeException("user not found"));
+        CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceId)
+                .orElseThrow(() -> new RuntimeException("courseInstance not found"));
+        Course course = courseRepository.findById(courseInstance.getCourseId())
+                .orElseThrow(() -> new RuntimeException("course not found"));
+        User teacher = userRepository.findById(courseInstance.getTeacherId())
+                .orElseThrow(() -> new RuntimeException("user not found"));
 
         return courseInstanceResponseMapper.toDTO(courseInstance, course, teacher);
     }
@@ -123,19 +142,23 @@ public class CourseInstanceService {
         return new PageImpl<>(
                 dtoList,
                 page.getPageable(),
-                page.getTotalElements()
-        );
+                page.getTotalElements());
     }
 
-    public void enrollStudent(String courseInstanceId, String studentId){
-        if(courseInstanceId == null) throw new RuntimeException("courseInstanceId is null");
-        if(studentId == null) throw new RuntimeException("studentId is null");
+    public void enrollStudent(String courseInstanceId, String studentId) {
+        if (courseInstanceId == null)
+            throw new RuntimeException("courseInstanceId is null");
+        if (studentId == null)
+            throw new RuntimeException("studentId is null");
 
-        User student =  userRepository.findById(studentId).orElseThrow(() -> new RuntimeException("student not found"));
-        if(student.getRole() != RoleEnum.STUDENT) throw new RuntimeException("user is not student");
-        CourseInstance courseInstance =  courseInstanceRepository.findById(courseInstanceId).orElseThrow(() -> new RuntimeException("courseInstance not found"));
+        User student = userRepository.findById(studentId).orElseThrow(() -> new RuntimeException("student not found"));
+        if (student.getRole() != RoleEnum.STUDENT)
+            throw new RuntimeException("user is not student");
+        CourseInstance courseInstance = courseInstanceRepository.findById(courseInstanceId)
+                .orElseThrow(() -> new RuntimeException("courseInstance not found"));
 
-        if(userRepository.existsByIdAndListCourseInstanceContaining(studentId, courseInstanceId)) throw new RuntimeException("user already join the course instance");
+        if (userRepository.existsByIdAndListCourseInstanceContaining(studentId, courseInstanceId))
+            throw new RuntimeException("user already join the course instance");
         List<String> list = student.getListCourseInstance();
         list.add(courseInstanceId);
         student.setListCourseInstance(list);
@@ -143,8 +166,31 @@ public class CourseInstanceService {
     }
 
     public Page<UserResponse> getAllStudents(Pageable pageable, String courseInstanceId) {
-        Page<User> page = userRepository.findAllByRoleAndListCourseInstanceContains(RoleEnum.STUDENT, courseInstanceId, pageable);
+        Page<User> page = userRepository.findAllByRoleAndListCourseInstanceContains(RoleEnum.STUDENT, courseInstanceId,
+                pageable);
 
         return userResponseMapper.toDTOPage(page);
+    }
+
+    public Page<UserResponse> getEligibleStudents(Pageable pageable, String courseInstanceId) {
+        if (courseInstanceId == null) {
+            throw new RuntimeException("courseInstanceId is null");
+        }
+
+        Page<User> allStudentsPage = userRepository.findAllByRole(RoleEnum.STUDENT, pageable);
+
+        List<User> eligible = allStudentsPage.getContent().stream()
+                .filter(user -> {
+                    List<String> enrolled = user.getListCourseInstance();
+                    return enrolled == null || !enrolled.contains(courseInstanceId);
+                })
+                .toList();
+
+        Page<User> eligiblePage = new PageImpl<>(
+                eligible,
+                allStudentsPage.getPageable(),
+                allStudentsPage.getTotalElements());
+
+        return userResponseMapper.toDTOPage(eligiblePage);
     }
 }

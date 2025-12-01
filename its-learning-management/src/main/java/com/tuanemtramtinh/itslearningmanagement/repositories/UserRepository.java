@@ -15,4 +15,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     boolean existsByIdAndListCourseInstanceContaining(String id, String courseInstanceId);
 
     Page<User> findAllByRoleAndListCourseInstanceContains(RoleEnum role, String courseInstanceId, Pageable pageable);
+
+    Page<User> findAllByRole(RoleEnum role, Pageable pageable);
 }
