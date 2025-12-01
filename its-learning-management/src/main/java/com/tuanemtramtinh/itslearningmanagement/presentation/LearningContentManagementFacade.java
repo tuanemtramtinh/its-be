@@ -1,9 +1,9 @@
 package com.tuanemtramtinh.itslearningmanagement.presentation;
 
+import com.tuanemtramtinh.itscommon.dto.UserResponse;
+import com.tuanemtramtinh.itslearningmanagement.dto.*;
+import com.tuanemtramtinh.itslearningmanagement.services.CourseInstanceService;
 import com.tuanemtramtinh.itslearningmanagement.services.CourseService;
-import com.tuanemtramtinh.itslearningmanagement.dto.CourseInstanceResponse;
-import com.tuanemtramtinh.itslearningmanagement.dto.CourseRequest;
-import com.tuanemtramtinh.itslearningmanagement.dto.CourseResponse;
 import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
 import com.tuanemtramtinh.itscommon.response.ApiResponse;
 
@@ -21,19 +21,64 @@ import java.util.List;
 public class LearningContentManagementFacade {
 
     private final CourseService courseService;
+    private final CourseInstanceService courseInstanceService;
 
-    public LearningContentManagementFacade(CourseService courseService) {
+    public LearningContentManagementFacade(CourseService courseService, CourseInstanceService courseInstanceService) {
         this.courseService = courseService;
+        this.courseInstanceService = courseInstanceService;
     }
 
-    @GetMapping("/")
-    public String index() {
-        return "Hello World!";
+    @PostMapping("/courses-instance/create")
+    public ResponseEntity<ApiResponse<CourseInstanceResponse>> createCourseInstance(@RequestBody CourseInstanceRequest courseInstanceRequest) {
+        CourseInstanceResponse result = courseInstanceService.createCourseInstance(courseInstanceRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Create new course successfully", result));
     }
 
-    @GetMapping("/test")
-    public String testAuthentication() {
-        return "Hello World! Auth";
+    @PostMapping("/courses-instance/updateStatus")
+    public ResponseEntity<ApiResponse<CourseInstanceUpdateStatusResponse>> updateStatusCourseInstance(@RequestBody CourseInstanceUpdateStatusRequest courseInstanceUpdateStatusRequest) {
+        CourseInstanceUpdateStatusResponse result = courseInstanceService.updateStatusCourseInstance(courseInstanceUpdateStatusRequest);
+        return ResponseEntity.ok(ApiResponse.ok("Update course instance status successfully", result));
+    }
+
+    @DeleteMapping("/courses-instance/delete")
+    public ResponseEntity<ApiResponse<Void>>  deleteCourseInstance(@RequestParam String courseInstanceId) {
+        courseInstanceService.deleteCourseInstance(courseInstanceId);
+        return ResponseEntity.ok(ApiResponse.ok("Delete course instance successfully"));
+    }
+
+    @PostMapping("/courses-instance/archive")
+    public ResponseEntity<ApiResponse<Void>> archiveCourseInstance(@RequestParam String courseInstanceId) {
+        courseInstanceService.archiveCourseInstance(courseInstanceId);
+        return ResponseEntity.ok(ApiResponse.ok("Archive course instance successfully"));
+    }
+
+    @GetMapping("/courses-instance/getDetails")
+    public ResponseEntity<ApiResponse<CourseInstanceResponse>> getCourseInstanceDetails(@RequestParam String courseInstanceId) {
+        CourseInstanceResponse result = courseInstanceService.getCourseInstanceDetails(courseInstanceId);
+        return ResponseEntity.ok(ApiResponse.ok("Get course instance successfully", result));
+    }
+
+    @GetMapping("/courses-instance/getDetailsList")
+    public ResponseEntity<ApiResponse<Page<CourseInstanceResponse>>> getCourseInstanceDetailsList(
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        Page<CourseInstanceResponse> result = courseInstanceService.getAllCourseInstanceDetails(pageable);
+        return ResponseEntity.ok(ApiResponse.ok("Get list course instance details successfully", result));
+    }
+
+    @PostMapping("/courses-instance/enrollStudent")
+    public ResponseEntity<ApiResponse<Void>> enrollStudent(@RequestParam String courseInstanceId,
+                                                           @RequestParam String studentId) {
+        courseInstanceService.enrollStudent(courseInstanceId, studentId);
+        return ResponseEntity.ok(ApiResponse.ok("Enrollment student successfully"));
+    }
+
+    @GetMapping("/courses-instance/getAllStudentDetails")
+    public ResponseEntity<ApiResponse<Page<UserResponse>>>  getAllStudentDetails(
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestParam String courseInstanceId){
+        Page<UserResponse> result = courseInstanceService.getAllStudents(pageable,  courseInstanceId);
+        return ResponseEntity.ok(ApiResponse.ok("Get all student details successfully", result));
     }
 
     @PostMapping("/courses")
