@@ -2,6 +2,7 @@ package com.tuanemtramtinh.itsusers.services;
 
 import com.tuanemtramtinh.itscommon.entity.User;
 import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
 import com.tuanemtramtinh.itsusers.dto.LoginRequest;
 import com.tuanemtramtinh.itsusers.dto.LoginResponse;
 import com.tuanemtramtinh.itsusers.dto.RegisterRequest;
@@ -44,6 +45,7 @@ public class AuthenticationService {
                 .email(req.getEmail())
                 .password(encodedPassword)
                 .role(req.getRole() != null ? req.getRole() : RoleEnum.STUDENT) // Default role
+                .status(req.getStatus() != null ? req.getStatus() : UserStatusEnum.ACTIVE)
                 .listCourseInstance(new ArrayList<>())
                 .build();
 

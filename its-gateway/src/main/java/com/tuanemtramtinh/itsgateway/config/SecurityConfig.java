@@ -13,6 +13,10 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +35,7 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             // Public endpoints - không cần authentication
@@ -43,6 +48,21 @@ public class SecurityConfig {
         .exceptionHandling(exceptions -> exceptions
             .authenticationEntryPoint(jwtAuthenticationEntryPoint))
         .build();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() { // <--- Đổi tên method và kiểu trả về
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOriginPattern("*"); // Hoặc cụ thể "http://localhost:5173"
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("*");
+    config.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+
+    return source; // Trả về source, không wrap vào CorsWebFilter nữa
   }
 
   @Bean

@@ -1,6 +1,7 @@
 package com.tuanemtramtinh.itsusers.dto;
 
 import com.tuanemtramtinh.itscommon.enums.RoleEnum;
+import com.tuanemtramtinh.itscommon.enums.UserStatusEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,4 +18,5 @@ public class RegisterRequest {
     private String email;
     private String password;
     private RoleEnum role;
+    private UserStatusEnum status;
 }
