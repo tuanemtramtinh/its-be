@@ -1,12 +1,15 @@
 package com.tuanemtramtinh.itsgateway.config;
 
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -15,7 +18,6 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import io.jsonwebtoken.security.Keys;
@@ -38,6 +40,7 @@ public class SecurityConfig {
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
+            .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             // Public endpoints - không cần authentication
             .pathMatchers("/users/register", "/users/login", "/actuator/**").permitAll()
             // Tất cả các request khác cần authentication
@@ -51,10 +54,10 @@ public class SecurityConfig {
   }
 
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() { // <--- Đổi tên method và kiểu trả về
+  public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("*"); // Hoặc cụ thể "http://localhost:5173"
+    config.setAllowedOriginPatterns(List.of("*"));
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
     config.setMaxAge(3600L);
