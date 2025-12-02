@@ -48,8 +48,8 @@ public class SecurityConfig {
             // Tất cả các request khác cần authentication
             .anyExchange().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2
-            .jwt(Customizer.withDefaults())
-            .authenticationEntryPoint(jwtAuthenticationEntryPoint))
+            .jwt(Customizer.withDefaults()))
+        // .authenticationEntryPoint(jwtAuthenticationEntryPoint))
         .exceptionHandling(exceptions -> exceptions
             .authenticationEntryPoint(jwtAuthenticationEntryPoint))
         .build();
