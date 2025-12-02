@@ -15,15 +15,15 @@ spring:
         webflux:
           globalcors:
             add-to-simple-url-handler-mapping: true
-            corsConfigurations:
+            cors-configurations:
               "[/**]":
-                allowedOrigins:
+                allowedOriginPatterns:
                   - "*"
                 allowedMethods:
                   - "*"
                 allowedHeaders:
                   - "*"
-                allowCredentials: false
+                allowCredentials: true
                 maxAge: 3600
           routes:
             - id: learning-management-service
