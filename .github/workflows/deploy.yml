@@ -39,7 +39,7 @@ jobs:
           port: ${{ secrets.PORT_PRODUCTION }}
           script: |
             cd its-be/
-            docker compose down
+            docker-compose down
             git fetch --all
             git reset --hard origin/main
             ./mvnw clean package --no-transfer-progress -B
