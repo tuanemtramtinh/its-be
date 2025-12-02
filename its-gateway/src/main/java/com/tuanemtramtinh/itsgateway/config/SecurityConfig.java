@@ -47,7 +47,6 @@ public class SecurityConfig {
         // configuration.setAllowedHeaders(List.of("*"));
         // return configuration;
         // }))
-        .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
@@ -62,24 +61,26 @@ public class SecurityConfig {
         .build();
   }
 
-  @Bean
-  @Order(Ordered.HIGHEST_PRECEDENCE)
-  public CorsWebFilter corsWebFilter() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of(
-        "http://localhost:5173",
-        "https://its-fe.tuanem.io.vn"));
-    config.setAllowCredentials(true); // ← Cho phép gửi Authorization header
+  // @Bean
+  // @Order(Ordered.HIGHEST_PRECEDENCE)
+  // public CorsWebFilter corsWebFilter() {
+  // CorsConfiguration config = new CorsConfiguration();
+  // config.setAllowedOrigins(List.of(
+  // "http://localhost:5173",
+  // "https://its-fe.tuanem.io.vn"));
+  // config.setAllowCredentials(true); // ← Cho phép gửi Authorization header
 
-    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
-    config.setAllowedHeaders(Arrays.asList("*"));
-    config.setMaxAge(3600L);
+  // config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE",
+  // "OPTIONS", "PATCH", "HEAD"));
+  // config.setAllowedHeaders(Arrays.asList("*"));
+  // config.setMaxAge(3600L);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+  // UrlBasedCorsConfigurationSource source = new
+  // UrlBasedCorsConfigurationSource();
+  // source.registerCorsConfiguration("/**", config);
 
-    return new CorsWebFilter(source);
-  }
+  // return new CorsWebFilter(source);
+  // }
 
   @Bean
   public ReactiveJwtDecoder jwtDecoder() {
