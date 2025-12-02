@@ -14,12 +14,20 @@ spring:
       server:
         webflux:
           globalcors:
+            add-to-simple-url-handler-mapping: true
             cors-configurations:
-            "[/**]": # Applies to all paths
-              allowedOrigins: "*"
-              allowedMethods: GET, POST, PATCH, PUT, DELETE, OPTIONS
-              allowedHeaders: "*"
-              allowCredentials: true
+              "[/**]":
+                allowedOriginPatterns:
+                  - "*"
+                allowedMethods:
+                  - "*"
+                allowedHeaders:
+                  - "*"
+                exposedHeaders:
+                  - Authorization
+                  - Content-Type
+                allowCredentials: true
+                maxAge: 3600
           routes:
             - id: learning-management-service
               uri: lb://its-learning-management
