@@ -17,7 +17,7 @@ spring:
             cors-configurations:
             "[/**]": # Applies to all paths
               allowedOrigins: "*"
-              allowedMethods: GET, POST, PUT, DELETE, OPTIONS
+              allowedMethods: GET, POST, PATCH, PUT, DELETE, OPTIONS
               allowedHeaders: "*"
               allowCredentials: true
           routes:
