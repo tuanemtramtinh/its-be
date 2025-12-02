@@ -40,16 +40,10 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
-        // .cors(cors -> cors.configurationSource(request -> {
-        // CorsConfiguration configuration = new CorsConfiguration();
-        // configuration.setAllowedOrigins(List.of("*"));
-        // configuration.setAllowedMethods(List.of("*"));
-        // configuration.setAllowedHeaders(List.of("*"));
-        // return configuration;
-        // }))
+        .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
-            .pathMatchers(HttpMethod.OPTIONS).permitAll()
+            .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .pathMatchers("/users/register", "/users/login", "/actuator/**").permitAll()
             // Tất cả các request khác cần authentication
             .anyExchange().authenticated())
