@@ -38,13 +38,14 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
-        .cors(cors -> cors.configurationSource(request -> {
-          CorsConfiguration configuration = new CorsConfiguration();
-          configuration.setAllowedOrigins(List.of("*"));
-          configuration.setAllowedMethods(List.of("*"));
-          configuration.setAllowedHeaders(List.of("*"));
-          return configuration;
-        }))
+        // .cors(cors -> cors.configurationSource(request -> {
+        // CorsConfiguration configuration = new CorsConfiguration();
+        // configuration.setAllowedOrigins(List.of("*"));
+        // configuration.setAllowedMethods(List.of("*"));
+        // configuration.setAllowedHeaders(List.of("*"));
+        // return configuration;
+        // }))
+        .cors(cors -> cors.disable())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
