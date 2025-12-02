@@ -45,7 +45,7 @@ public class SecurityConfig {
         // configuration.setAllowedHeaders(List.of("*"));
         // return configuration;
         // }))
-        .cors(Customizer.withDefaults())
+        // .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -61,22 +61,20 @@ public class SecurityConfig {
         .build();
   }
 
-  // @Bean
-  // public CorsConfigurationSource corsConfigurationSource() {
-  // CorsConfiguration config = new CorsConfiguration();
-  // config.setAllowCredentials(true);
-  // config.setAllowedOriginPatterns(List.of("*")); // Use patterns for allowing
-  // all with credentials
-  // config.addAllowedHeader("*");
-  // config.addAllowedMethod("*");
+  @Bean
+  public CorsWebFilter corsWebFilter() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOriginPattern("*");
+    config.addAllowedMethod("*");
+    config.addAllowedHeader("*");
+    config.setMaxAge(3600L);
 
-  // UrlBasedCorsConfigurationSource source = new
-  // UrlBasedCorsConfigurationSource();
-  // source.registerCorsConfiguration("/**", config);
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
 
-  // // Return the source directly, let Spring Security wrap it
-  // return source;
-  // }
+    return new CorsWebFilter(source);
+  }
 
   @Bean
   public ReactiveJwtDecoder jwtDecoder() {
