@@ -38,7 +38,6 @@ public class SecurityConfig {
   private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
   @Bean
-  @Order(Ordered.HIGHEST_PRECEDENCE)
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
         // .cors(cors -> cors.configurationSource(request -> {
@@ -51,8 +50,7 @@ public class SecurityConfig {
         // .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
-            .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            // Public endpoints - không cần authentication
+            .pathMatchers(HttpMethod.OPTIONS).permitAll()
             .pathMatchers("/users/register", "/users/login", "/actuator/**").permitAll()
             // Tất cả các request khác cần authentication
             .anyExchange().authenticated())
@@ -65,6 +63,7 @@ public class SecurityConfig {
   }
 
   @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
   public CorsWebFilter corsWebFilter() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowedOriginPatterns(Arrays.asList("*"));
