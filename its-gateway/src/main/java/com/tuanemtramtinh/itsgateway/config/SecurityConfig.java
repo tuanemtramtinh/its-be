@@ -47,7 +47,7 @@ public class SecurityConfig {
         // configuration.setAllowedHeaders(List.of("*"));
         // return configuration;
         // }))
-        // .cors(Customizer.withDefaults())
+        .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS).permitAll()
@@ -66,7 +66,9 @@ public class SecurityConfig {
   @Order(Ordered.HIGHEST_PRECEDENCE)
   public CorsWebFilter corsWebFilter() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOriginPatterns(Arrays.asList("*"));
+    config.setAllowedOrigins(List.of(
+        "http://localhost:5173",
+        "https://its-fe.tuanem.io.vn"));
     config.setAllowCredentials(true); // ← Cho phép gửi Authorization header
 
     config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
