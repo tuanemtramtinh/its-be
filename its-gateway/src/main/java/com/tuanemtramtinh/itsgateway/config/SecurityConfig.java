@@ -1,6 +1,7 @@
 package com.tuanemtramtinh.itsgateway.config;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.crypto.SecretKey;
@@ -66,11 +67,11 @@ public class SecurityConfig {
   @Bean
   public CorsWebFilter corsWebFilter() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.addAllowedOriginPattern("*");
-    config.addAllowedMethod("*");
-    config.addAllowedHeader("*");
-    config.addExposedHeader("*");
+    config.setAllowedOriginPatterns(Arrays.asList("*"));
+    config.setAllowCredentials(true); // ← Cho phép gửi Authorization header
+
+    config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
+    config.setAllowedHeaders(Arrays.asList("*"));
     config.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
