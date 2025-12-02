@@ -64,8 +64,10 @@ public class LearningContentManagementFacade {
 
     @GetMapping("/courses-instance/getDetailsList")
     public ResponseEntity<ApiResponse<Page<CourseInstanceResponse>>> getCourseInstanceDetailsList(
-            @PageableDefault(size = 10) Pageable pageable) {
-        Page<CourseInstanceResponse> result = courseInstanceService.getAllCourseInstanceDetails(pageable);
+            @PageableDefault(size = 10) Pageable pageable, @RequestParam(required = false) String teacherId,
+            @RequestParam(required = false) String studentId) {
+        Page<CourseInstanceResponse> result = courseInstanceService.getAllCourseInstanceDetails(pageable, teacherId,
+                studentId);
         return ResponseEntity.ok(ApiResponse.ok("Get list course instance details successfully", result));
     }
 
