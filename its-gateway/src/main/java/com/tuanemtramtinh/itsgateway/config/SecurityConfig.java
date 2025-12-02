@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import io.jsonwebtoken.security.Keys;
@@ -37,7 +38,7 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        // .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -53,10 +54,28 @@ public class SecurityConfig {
         .build();
   }
 
+  // @Bean
+  // public CorsConfigurationSource corsConfigurationSource() {
+  // CorsConfiguration config = new CorsConfiguration();
+  // config.setAllowCredentials(true);
+  // config.setAllowedOriginPatterns(List.of("*"));
+  // config.addAllowedHeader("*");
+  // config.addAllowedMethod("*");
+  // config.setMaxAge(3600L);
+
+  // UrlBasedCorsConfigurationSource source = new
+  // UrlBasedCorsConfigurationSource();
+  // source.registerCorsConfiguration("/**", config);
+
+  // return source; // Trả về source, không wrap vào CorsWebFilter nữa
+  // }
+
   @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
+  public CorsWebFilter corsWebFilter() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
+    // Use setAllowedOriginPatterns instead of setAllowedOrigins when
+    // allowCredentials is true
     config.setAllowedOriginPatterns(List.of("*"));
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
@@ -65,7 +84,8 @@ public class SecurityConfig {
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
 
-    return source; // Trả về source, không wrap vào CorsWebFilter nữa
+    // Wrap it in the high-priority CorsWebFilter
+    return new CorsWebFilter(source);
   }
 
   @Bean
