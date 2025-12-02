@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.crypto.SecretKey;
-
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,7 @@ public class SecurityConfig {
   private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
   @Bean
+  @Order(Ordered.HIGHEST_PRECEDENCE)
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
         // .cors(cors -> cors.configurationSource(request -> {
@@ -68,6 +70,7 @@ public class SecurityConfig {
     config.addAllowedOriginPattern("*");
     config.addAllowedMethod("*");
     config.addAllowedHeader("*");
+    config.addExposedHeader("*");
     config.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
