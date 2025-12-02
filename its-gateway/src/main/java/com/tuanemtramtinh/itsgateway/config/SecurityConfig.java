@@ -38,7 +38,13 @@ public class SecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .cors(cors -> cors.configurationSource(request -> {
+          CorsConfiguration configuration = new CorsConfiguration();
+          configuration.setAllowedOrigins(List.of("*"));
+          configuration.setAllowedMethods(List.of("*"));
+          configuration.setAllowedHeaders(List.of("*"));
+          return configuration;
+        }))
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -54,20 +60,22 @@ public class SecurityConfig {
         .build();
   }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowCredentials(true);
-    config.setAllowedOriginPatterns(List.of("*")); // Use patterns for allowing all with credentials
-    config.addAllowedHeader("*");
-    config.addAllowedMethod("*");
+  // @Bean
+  // public CorsConfigurationSource corsConfigurationSource() {
+  // CorsConfiguration config = new CorsConfiguration();
+  // config.setAllowCredentials(true);
+  // config.setAllowedOriginPatterns(List.of("*")); // Use patterns for allowing
+  // all with credentials
+  // config.addAllowedHeader("*");
+  // config.addAllowedMethod("*");
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", config);
+  // UrlBasedCorsConfigurationSource source = new
+  // UrlBasedCorsConfigurationSource();
+  // source.registerCorsConfiguration("/**", config);
 
-    // Return the source directly, let Spring Security wrap it
-    return source;
-  }
+  // // Return the source directly, let Spring Security wrap it
+  // return source;
+  // }
 
   @Bean
   public ReactiveJwtDecoder jwtDecoder() {
