@@ -45,7 +45,7 @@ public class SecurityConfig {
         // configuration.setAllowedHeaders(List.of("*"));
         // return configuration;
         // }))
-        .cors(cors -> cors.disable())
+        .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.disable())
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
