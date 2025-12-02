@@ -11,38 +11,23 @@ spring:
 
   cloud:
     gateway:
-      server:
-        webflux:
-          globalcors:
-            cors-configurations:
-              "[/**]": # Apply to all routes
-                allowedOrigins:
-                  - "http://localhost:5173"
-                allowedMethods:
-                  - GET
-                  - POST
-                  - PUT
-                  - DELETE
-                  - OPTIONS
-                allowedHeaders: "*"
-                allowCredentials: true
-          routes:
-            - id: learning-management-service
-              uri: lb://its-learning-management
-              predicates:
-                - Path=/learning-management/**
-              filters:
-                - StripPrefix=1
-            - id: user-services
-              uri: lb://its-users
-              predicates:
-                - Path=/users/**
-              filters:
-                - StripPrefix=1
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
+      routes:
+        - id: learning-management-service
+          uri: lb://its-learning-management
+          predicates:
+            - Path=/learning-management/**
+          filters:
+            - StripPrefix=1
+        - id: user-services
+          uri: lb://its-users
+          predicates:
+            - Path=/users/**
+          filters:
+            - StripPrefix=1
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 
 eureka:
   client:
