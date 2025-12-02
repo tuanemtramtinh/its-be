@@ -2,9 +2,9 @@ package com.tuanemtramtinh.itscommon.enums;
 
 public enum FileTypeEnum {
     PDF,
-    WORD,
-    EXCEL,
-    PPT,
+    DOCUMENT, // Word, Google Docs, etc.
+    SPREADSHEET, // Excel, Google Sheets, etc.
+    PRESENTATION, // PowerPoint, Google Slides, etc.
     IMAGE,
     VIDEO,
     AUDIO,

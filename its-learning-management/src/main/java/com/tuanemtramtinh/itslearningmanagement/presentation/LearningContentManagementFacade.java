@@ -13,8 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,9 +27,9 @@ public class LearningContentManagementFacade {
     private final CourseInstanceService courseInstanceService;
     private final ContentService contentService;
 
-    public LearningContentManagementFacade(CourseService courseService, 
-                                            CourseInstanceService courseInstanceService,
-                                            ContentService contentService) {
+    public LearningContentManagementFacade(CourseService courseService,
+            CourseInstanceService courseInstanceService,
+            ContentService contentService) {
         this.courseService = courseService;
         this.courseInstanceService = courseInstanceService;
         this.contentService = contentService;
@@ -164,7 +166,6 @@ public class LearningContentManagementFacade {
         return ResponseEntity.ok(ApiResponse.ok("Assign teacher to course successfully", res));
     }
 
-
     @PostMapping("/contents")
     public ResponseEntity<ApiResponse<ContentResponse>> createContent(@RequestBody ContentRequest contentRequest) {
         try {
@@ -218,17 +219,18 @@ public class LearningContentManagementFacade {
         }
     }
 
-
-    @PostMapping("/contents/{contentId}/attachments")
-    public ResponseEntity<ApiResponse<AttachmentResponse>> addContentAttachment(@PathVariable String contentId,
-            @RequestBody AttachmentRequest attachmentRequest) {
+    @PostMapping(value = "/contents/{contentId}/attachments", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<AttachmentResponse>> addContentAttachment(
+            @PathVariable String contentId,
+            @RequestParam("file") MultipartFile file) {
         try {
-            AttachmentResponse result = contentService.addContentAttachment(contentId, attachmentRequest);
-            return ResponseEntity.ok(ApiResponse.ok("Add attachment successfully", result));
+            AttachmentResponse result = contentService.addContentAttachment(contentId, file);
+            return ResponseEntity.ok(ApiResponse.ok("Upload attachment successfully", result));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
         }
     }
+
 
     @DeleteMapping("/attachments/{attachmentId}")
     public ResponseEntity<ApiResponse<Void>> removeContentAttachment(@PathVariable String attachmentId) {

@@ -2,7 +2,6 @@ package com.tuanemtramtinh.itslearningmanagement.services;
 
 import com.tuanemtramtinh.itscommon.entity.Attachment;
 import com.tuanemtramtinh.itscommon.entity.Content;
-import com.tuanemtramtinh.itscommon.entity.CourseInstance;
 import com.tuanemtramtinh.itscommon.enums.ContentStatusEnum;
 import com.tuanemtramtinh.itslearningmanagement.dto.AttachmentRequest;
 import com.tuanemtramtinh.itslearningmanagement.dto.AttachmentResponse;
@@ -17,9 +16,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContentService {
@@ -28,17 +30,20 @@ public class ContentService {
     private final AttachmentRepository attachmentRepository;
     private final ContentResponseMapper contentResponseMapper;
     private final AttachmentResponseMapper attachmentResponseMapper;
+    private final CloudinaryService cloudinaryService;
 
     public ContentService(CourseInstanceRepository courseInstanceRepository,
             ContentRepository contentRepository,
             AttachmentRepository attachmentRepository,
             ContentResponseMapper contentResponseMapper,
-            AttachmentResponseMapper attachmentResponseMapper) {
+            AttachmentResponseMapper attachmentResponseMapper,
+            CloudinaryService cloudinaryService) {
         this.courseInstanceRepository = courseInstanceRepository;
         this.contentRepository = contentRepository;
         this.attachmentRepository = attachmentRepository;
         this.contentResponseMapper = contentResponseMapper;
         this.attachmentResponseMapper = attachmentResponseMapper;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public ContentResponse createContent(ContentRequest contentRequest) {
@@ -47,7 +52,7 @@ public class ContentService {
         if (contentRequest.getTitle() == null)
             throw new RuntimeException("title is null");
 
-        CourseInstance courseInstance = courseInstanceRepository.findById(contentRequest.getCourseInstanceId())
+        courseInstanceRepository.findById(contentRequest.getCourseInstanceId())
                 .orElseThrow(() -> new RuntimeException("course instance not found"));
 
         Content content = Content.builder()
@@ -123,29 +128,40 @@ public class ContentService {
         return contentResponseMapper.toDTOPage(contentPage);
     }
 
-    public AttachmentResponse addContentAttachment(String contentId, AttachmentRequest attachmentRequest) {
+    public AttachmentResponse addContentAttachment(String contentId, MultipartFile file) {
         if (contentId == null)
             throw new RuntimeException("contentId is null");
-        if (attachmentRequest.getFileUrl() == null)
-            throw new RuntimeException("fileUrl is null");
-        if (attachmentRequest.getFileName() == null)
-            throw new RuntimeException("fileName is null");
+        if (file == null || file.isEmpty())
+            throw new RuntimeException("file is empty");
 
-        Content content = contentRepository.findById(contentId)
+        contentRepository.findById(contentId)
                 .orElseThrow(() -> new RuntimeException("content not found"));
 
-        Attachment attachment = Attachment.builder()
-                .ownerId(contentId)
-                .fileUrl(attachmentRequest.getFileUrl())
-                .fileName(attachmentRequest.getFileName())
-                .fileSize(attachmentRequest.getFileSize())
-                .fileType(attachmentRequest.getFileType())
-                .uploadedAt(new Date())
-                .build();
+        try {
+            String folder = "learning-management/contents/" + contentId;
+            Map<String, Object> uploadResult = cloudinaryService.uploadFile(file, folder);
 
-        attachment = attachmentRepository.save(attachment);
-        return attachmentResponseMapper.toDTO(attachment);
+            String fileUrl = (String) uploadResult.get("secure_url");
+            Long fileSize = file.getSize();
+            com.tuanemtramtinh.itscommon.enums.FileTypeEnum fileType = cloudinaryService
+                    .determineFileType(file.getContentType());
+
+            Attachment attachment = Attachment.builder()
+                    .ownerId(contentId)
+                    .fileUrl(fileUrl)
+                    .fileName(file.getOriginalFilename())
+                    .fileSize(fileSize)
+                    .fileType(fileType)
+                    .uploadedAt(new Date())
+                    .build();
+
+            attachment = attachmentRepository.save(attachment);
+            return attachmentResponseMapper.toDTO(attachment);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload file: " + e.getMessage(), e);
+        }
     }
+
 
     public void removeContentAttachment(String attachmentId) {
         if (attachmentId == null)
@@ -154,14 +170,38 @@ public class ContentService {
         Attachment attachment = attachmentRepository.findById(attachmentId)
                 .orElseThrow(() -> new RuntimeException("attachment not found"));
 
+        try {
+            String publicId = cloudinaryService.extractPublicIdFromUrl(attachment.getFileUrl());
+            if (publicId != null) {
+                String resourceType = determineCloudinaryResourceType(attachment.getFileType());
+                cloudinaryService.deleteFile(publicId, resourceType);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to delete file from Cloudinary: " + e.getMessage());
+        }
+
         attachmentRepository.delete(attachment);
+    }
+
+
+    private String determineCloudinaryResourceType(com.tuanemtramtinh.itscommon.enums.FileTypeEnum fileType) {
+        if (fileType == null) {
+            return "raw";
+        }
+        switch (fileType) {
+            case IMAGE:
+                return "image";
+            case VIDEO:
+                return "video";
+            default:
+                return "raw";
+        }
     }
 
     public List<AttachmentResponse> getContentAttachments(String contentId) {
         if (contentId == null)
             throw new RuntimeException("contentId is null");
 
-        // Verify content exists
         contentRepository.findById(contentId)
                 .orElseThrow(() -> new RuntimeException("content not found"));
 
