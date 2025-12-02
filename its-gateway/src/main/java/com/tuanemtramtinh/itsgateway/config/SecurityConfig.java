@@ -54,38 +54,19 @@ public class SecurityConfig {
         .build();
   }
 
-  // @Bean
-  // public CorsConfigurationSource corsConfigurationSource() {
-  // CorsConfiguration config = new CorsConfiguration();
-  // config.setAllowCredentials(true);
-  // config.setAllowedOriginPatterns(List.of("*"));
-  // config.addAllowedHeader("*");
-  // config.addAllowedMethod("*");
-  // config.setMaxAge(3600L);
-
-  // UrlBasedCorsConfigurationSource source = new
-  // UrlBasedCorsConfigurationSource();
-  // source.registerCorsConfiguration("/**", config);
-
-  // return source; // Trả về source, không wrap vào CorsWebFilter nữa
-  // }
-
   @Bean
-  public CorsWebFilter corsWebFilter() {
+  public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
-    // Use setAllowedOriginPatterns instead of setAllowedOrigins when
-    // allowCredentials is true
-    config.setAllowedOriginPatterns(List.of("*"));
+    config.setAllowedOriginPatterns(List.of("*")); // Use patterns for allowing all with credentials
     config.addAllowedHeader("*");
     config.addAllowedMethod("*");
-    config.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", config);
 
-    // Wrap it in the high-priority CorsWebFilter
-    return new CorsWebFilter(source);
+    // Return the source directly, let Spring Security wrap it
+    return source;
   }
 
   @Bean
