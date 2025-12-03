@@ -4,6 +4,7 @@ public enum ContentTypeEnum {
     LECTURE,
     MATERIAL,
     VIDEO,
+    LESSON,
     DOCUMENT,
     LINK,
     IMAGE
