@@ -109,7 +109,7 @@ public class CourseService {
         course.setCode(req.getCode());
         course.setDescription(req.getDescription());
         course.setCredit(req.getCredit());
-        course.setStatus(CourseStatusEnum.ACTIVE);
+        course.setStatus(req.getStatus());
         course = courseRepository.save(course);
 
         return courseResponseMapper.toDTO(course);

@@ -1,5 +1,7 @@
 package com.tuanemtramtinh.itslearningmanagement.dto;
 
+import com.tuanemtramtinh.itscommon.enums.CourseStatusEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,5 @@ public class CourseRequest {
     private String code;
     private String description;
     private Integer credit;
-    private String status;
+    private CourseStatusEnum status;
 }
