@@ -1,33 +1,21 @@
-package com.tuanemtramtinh.itscommon.entity;
+package com.tuanemtramtinh.itslearningmanagement.dto;
 
 import com.tuanemtramtinh.itscommon.enums.ContentStatusEnum;
 import com.tuanemtramtinh.itscommon.enums.ContentTypeEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Setter;
 
-import java.util.Date;
-
-@Document(collection = "contents")
-@Builder
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-public class Content {
-    @Id
-    private String id;
-
+@NoArgsConstructor
+public class ContentRequest {
     private String courseInstanceId;
-
     private String title;
     private String description;
     private ContentTypeEnum type;
     private ContentStatusEnum status;
     private Integer orderIndex;
-
-    private Date createdAt;
-    private Date updatedAt;
 }
