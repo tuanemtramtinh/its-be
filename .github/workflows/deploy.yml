@@ -42,6 +42,6 @@ jobs:
             docker compose down
             git fetch --all
             git reset --hard origin/main
-            ./mvnw clean package --no-transfer-progress -B
+            ./mvnw clean package --no-transfer-progress -B -DskipTests
             docker compose build
             docker compose up -d

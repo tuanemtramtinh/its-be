@@ -13,6 +13,7 @@ spring:
     gateway:
       server:
         webflux:
+<<<<<<< HEAD
           globalcors:
             add-to-simple-url-handler-mapping: true
             cors-configurations:
@@ -28,6 +29,8 @@ spring:
                   - OPTIONS
                 allowedHeaders: "*"
                 allowCredentials: true
+=======
+>>>>>>> e9b63b34d2c6a95bc05fea9fd63449cad9a98b96
           routes:
             - id: learning-management-service
               uri: lb://its-learning-management

@@ -15,7 +15,6 @@ import com.tuanemtramtinh.itslearningmanagement.repositories.CourseRepository;
 import com.tuanemtramtinh.itslearningmanagement.repositories.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -124,25 +123,68 @@ public class CourseInstanceService {
         return courseInstanceResponseMapper.toDTO(courseInstance, course, teacher);
     }
 
-    public Page<CourseInstanceResponse> getAllCourseInstanceDetails(Pageable pageable) {
-        Page<CourseInstance> page = courseInstanceRepository.findAll(pageable);
+    public Page<CourseInstanceResponse> getAllCourseInstanceDetails(Pageable pageable, String teacherId,
+            String studentId) {
 
-        List<CourseInstanceResponse> dtoList = page.stream()
-                .map(ci -> {
-                    Course course = courseRepository.findById(ci.getCourseId())
-                            .orElseThrow(() -> new RuntimeException("Course not found"));
+        if (studentId != null) {
+            User currentStudent = userRepository.findById(studentId)
+                    .orElseThrow(() -> new RuntimeException("Student not found"));
 
-                    User teacher = userRepository.findById(ci.getTeacherId())
-                            .orElseThrow(() -> new RuntimeException("Teacher not found"));
+            if (currentStudent.getListCourseInstance() == null || currentStudent.getListCourseInstance().isEmpty()) {
+                return Page.empty(pageable);
+            }
 
-                    return courseInstanceResponseMapper.toDTO(ci, course, teacher);
-                })
-                .toList();
+            int start = (int) pageable.getOffset();
+            int end = Math.min(start + pageable.getPageSize(), currentStudent.getListCourseInstance().size());
 
-        return new PageImpl<>(
-                dtoList,
-                page.getPageable(),
-                page.getTotalElements());
+            if (start >= currentStudent.getListCourseInstance().size()) {
+                return Page.empty(pageable);
+            }
+
+            List<String> pageIds = currentStudent.getListCourseInstance().subList(start, end);
+
+            List<CourseInstanceResponse> listCourseInstance = pageIds.stream()
+                    .map(courseInstanceId -> {
+                        CourseInstance current = courseInstanceRepository.findById(courseInstanceId)
+                                .orElseThrow(() -> new RuntimeException("Course Instance not found"));
+
+                        Course course = courseRepository.findById(current.getCourseId())
+                                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+                        User teacher = userRepository.findById(current.getTeacherId())
+                                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+                        return courseInstanceResponseMapper.toDTO(current, course, teacher);
+                    }).toList();
+
+            return new PageImpl<>(listCourseInstance, pageable, currentStudent.getListCourseInstance().size());
+        } else {
+            Page<CourseInstance> page;
+
+            if (teacherId != null) {
+                page = courseInstanceRepository.findAllByTeacherId(teacherId, pageable);
+            } else {
+                page = courseInstanceRepository.findAll(pageable);
+            }
+
+            List<CourseInstanceResponse> dtoList = page.stream()
+                    .map(ci -> {
+                        Course course = courseRepository.findById(ci.getCourseId())
+                                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+                        User teacher = userRepository.findById(ci.getTeacherId())
+                                .orElseThrow(() -> new RuntimeException("Teacher not found"));
+
+                        return courseInstanceResponseMapper.toDTO(ci, course, teacher);
+                    })
+                    .toList();
+
+            return new PageImpl<>(
+                    dtoList,
+                    page.getPageable(),
+                    page.getTotalElements());
+        }
+
     }
 
     public void enrollStudent(String courseInstanceId, String studentId) {
@@ -177,20 +219,31 @@ public class CourseInstanceService {
             throw new RuntimeException("courseInstanceId is null");
         }
 
-        Page<User> allStudentsPage = userRepository.findAllByRole(RoleEnum.STUDENT, pageable);
-
-        List<User> eligible = allStudentsPage.getContent().stream()
-                .filter(user -> {
-                    List<String> enrolled = user.getListCourseInstance();
-                    return enrolled == null || !enrolled.contains(courseInstanceId);
-                })
-                .toList();
-
-        Page<User> eligiblePage = new PageImpl<>(
-                eligible,
-                allStudentsPage.getPageable(),
-                allStudentsPage.getTotalElements());
+        Page<User> eligiblePage = userRepository.findEligibleStudentsByRole(
+                RoleEnum.STUDENT,
+                courseInstanceId,
+                pageable);
 
         return userResponseMapper.toDTOPage(eligiblePage);
+        // if (courseInstanceId == null) {
+        // throw new RuntimeException("courseInstanceId is null");
+        // }
+
+        // Page<User> allStudentsPage = userRepository.findAllByRole(RoleEnum.STUDENT,
+        // pageable);
+
+        // List<User> eligible = allStudentsPage.getContent().stream()
+        // .filter(user -> {
+        // List<String> enrolled = user.getListCourseInstance();
+        // return enrolled == null || !enrolled.contains(courseInstanceId);
+        // })
+        // .toList();
+
+        // Page<User> eligiblePage = new PageImpl<>(
+        // eligible,
+        // allStudentsPage.getPageable(),
+        // allStudentsPage.getTotalElements());
+
+        // return userResponseMapper.toDTOPage(eligiblePage);
     }
 }

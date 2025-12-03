@@ -1,5 +1,6 @@
 package com.tuanemtramtinh.itscommon.entity;
 
+import com.tuanemtramtinh.itscommon.enums.FileTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,17 +13,17 @@ import java.util.Date;
 @Document(collection = "attachments")
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Attachment {
     @Id
     private String id;
 
     private String ownerId;
-    private String courseId;
     private String fileUrl;
     private String fileName;
     private Long fileSize;
-    private String fileType;
+    private FileTypeEnum fileType;
+
     private Date uploadedAt;
 }

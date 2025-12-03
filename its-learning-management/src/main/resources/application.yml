@@ -13,6 +13,17 @@ spring:
   config:
     import: classpath:application-jwt.yml
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:dsvyour9p}
+  api-key: ${CLOUDINARY_API_KEY:987671397958468}
+  api-secret: ${CLOUDINARY_API_SECRET:A25C6xZpykPCtrhwv_r3hKS7Ha4}
+
 eureka:
   client:
     service-url:
